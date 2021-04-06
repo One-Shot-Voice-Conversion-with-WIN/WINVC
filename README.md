@@ -50,8 +50,8 @@ Audio samples are available at [here](https://one-shot-voice-conversion-with-wad
 │   ├── p225_005-feats.npy
 │   ......
 ├── p226
-│   ├── p226_001feats.npy
-│   ├── p226_003feats.npy
+│   ├── p226_001-feats.npy
+│   ├── p226_003-feats.npy
 │   ├── p226_004-feats.npy
 │   ......
 ├── p227
