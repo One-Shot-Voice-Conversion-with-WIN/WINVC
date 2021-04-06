@@ -8,6 +8,8 @@ By [Shengjie Huang](), [Yanyan Xu]()\*, [Dengfeng Ke]()\*, [Mingjie Chen](), [Th
 
 This repo is the official implementation of ["One-Shot Voice Conversion with Weight Adaptive Instance Normalization"](). 
 
+Audio samples are available at [here](https://one-shot-voice-conversion-with-wadain.github.io/demo/).
+
 ![](./pic/whole-model.png)
 
 
