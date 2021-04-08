@@ -6,20 +6,17 @@ from torch.autograd import Variable
 import torch
 import torch.nn.functional as F
 import numpy as np
-import os
-from os.path import join, basename, dirname, split, exists
 import time
 import datetime
-import librosa
 import glob
 import json
-
 from data_loader_vctk import TestDataset
 from concurrent.futures import ProcessPoolExecutor
 import subprocess
 from tqdm import tqdm
 from functools import partial
-import pyloudnorm
+import os
+from os.path import join, basename, dirname, split, exists
 
 
 def load_mel(melfile):
@@ -34,10 +31,6 @@ def process_test_loader(test_loader, G, sp_enc, device, sampling_rate, num_mels,
         test_mels = [(load_mel(melfile), load_mel(trgfile)) for melfile, trgfile in test_melfiles]
     else:
         test_mels = [load_mel(melfile) for melfile in test_melfiles]
-    if config.use_loudnorm:
-        loud_meter = pyloudnorm.Meter(sampling_rate)
-    else:
-        loud_meter = None
     with torch.no_grad():
         for idx, data in enumerate(test_mels):
             if isinstance(data, tuple):
