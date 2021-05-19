@@ -49,29 +49,74 @@ class Style2ResidualBlock1DBeta(nn.Module):
 
     def forward(self, inputs):
         x, c_src, c_trg = inputs
-        batch_size, in_channel, t = x.size()
+        """
+            x.shape =  torch.Size([8, 256, 256])  # 一维卷积之后的结果
+            c_src.shape =  torch.Size([8, 128])   
+            c_trg.shape =  torch.Size([8, 128])   # # 128维 speaker embedding
+        """
+        batch_size, in_channel, t = x.size()  # 8, 256, 256
 
         s = self.style_linear(c_trg).view(batch_size, 1, in_channel, 1)
         beta = self.style_linear_beta(c_trg).view(batch_size, 1, in_channel, 1)
+        """
+        self.style_linear: 
+            torch.autograd.Function.linear: 全联接层，
+        
+        input:  
+            speaker embedding with dimention = 128
+        output: 
+            s = gamma = torch.Size([8, 1, 256, 1])
+            beta = torch.Size([8, 1, 256, 1])
+        """
 
         # modulate: scale weights
         weight = self.scale * (self.weight * s + beta)  # b out in ks
+        """
+        self.weight.shape = torch.Size([1, 512, 256, 3])
+        s.shape = torch.Size([8, 1, 256, 1])
+        beta.shape = torch.Size([8, 1, 256, 1])
+
+        weight.shape =  torch.Size([8, 512, 256, 3])
+        """
 
         # demodulate
-        demod = torch.rsqrt(weight.pow(2).sum([2, 3]) + 1e-8)
-        demod_mean = torch.mean(weight.view(batch_size, self.dim_out, -1), dim=2)
+        """
+        Related work refered to image style transfer paper:
+            T. Karras, S. Laine, M. Aittala, J. Hellsten, J. Lehtinen, and T. Aila, 
+            “Analyzing and improving the image quality of stylegan,” 
+            in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2020, pp. 8110–8119.
+        
+        Before torch.rsqrt()平方根倒数:
+            weight.shape =  torch.Size([8, 512, 256, 3])
+
+        After torch.rsqrt():
+            demod.shape =  torch.Size([8, 512])
+        """
+        demod = torch.rsqrt(weight.pow(2).sum([2, 3]) + 1e-8)  # demod.shape =  torch.Size([8, 512])
+
+        demod_mean = torch.mean(weight.view(batch_size, self.dim_out, -1), dim=2)  # demod_mean.shape =  torch.Size([8, 512])
+
         weight = (weight - demod_mean.view(batch_size, self.dim_out, 1, 1)) * demod.view(batch_size, self.dim_out, 1, 1)
+        """
+        Input:
+            weight.shape =  torch.Size([8, 512, 256, 3])
+            demod_mean.view(batch_size, self.dim_out, 1, 1).shape =  torch.Size([8, 512, 1, 1])
+            demod.view(batch_size, self.dim_out, 1, 1).shape =       torch.Size([8, 512, 1, 1])
+        
+        Output:
+            weight.shape =  torch.Size([8, 512, 256, 3])
+        """
 
-        weight = weight.view(batch_size * self.dim_out, self.dim_in, self.kernel_size)
+        weight = weight.view(batch_size * self.dim_out, self.dim_in, self.kernel_size)  # weight.shape =  torch.Size([4096, 256, 3])
 
-        x = x.view(1, batch_size * in_channel, t)
+        x = x.view(1, batch_size * in_channel, t)  # x.shape =  torch.Size([1, 2048, 256])
 
-        out = F.conv1d(x, weight, padding=self.padding, groups=batch_size)
+        out = F.conv1d(x, weight, padding=self.padding, groups=batch_size)  # out.shape =  torch.Size([1, 4096, 256])
 
         _, _, new_t = out.size()
 
-        out = out.view(batch_size, self.dim_out, new_t)
-        out = self.glu(out)
+        out = out.view(batch_size, self.dim_out, new_t)  # out.shape =  torch.Size([8, 512, 256])
+        out = self.glu(out)  # out.shape =  torch.Size([8, 256, 256])
 
         # out = self.relu(out)
         return (out, c_src, c_trg)
