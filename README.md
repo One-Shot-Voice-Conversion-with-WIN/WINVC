@@ -1,16 +1,13 @@
-# One-Shot Voice Conversion with Weight Adaptive Instance Normalization
+# WINVC: One-Shot Voice Conversion with Weight Adaptive Instance Normalization
 
 ![](https://img.shields.io/badge/license-GPL(>=2)-blue.svg)
 ![image](https://img.shields.io/badge/python-3.6-orange.svg)
 
 
-By [Shengjie Huang](), [Yanyan Xu]()\*, [Dengfeng Ke]()\*, [Mingjie Chen](), [Thomas Hain]().
 
-This repo is the official implementation of ["One-Shot Voice Conversion with Weight Adaptive Instance Normalization"](). 
+Audio samples are available at [here](https://one-shot-voice-conversion-with-win.github.io/demo/).
 
-Audio samples are available at [here](https://one-shot-voice-conversion-with-wadain.github.io/demo/).
-
-![](./pic/whole-model.png)
+<!-- ![](./pic/whole-model.png) -->
 
 
 
@@ -71,7 +68,7 @@ Run the pretrain stage by ``` bash run_main.sh```. We use ***80*** speakers of V
 
 
 # Fine Tuning
-Run the fine tune stage by ```bash run_fine_tune.sh```. We use the other ***10*** speakers of VCTK data set, and only ***1*** utterance for each person used.
+To get the best performance, run the fine tune stage by ```bash run_fine_tune.sh```. We use the other ***10*** speakers of VCTK data set, and only ***1*** utterance for each person used.
 
 # Inference
 ```
