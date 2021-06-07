@@ -5,7 +5,7 @@
 
 
 
-Audio samples are available at [here](https://one-shot-voice-conversion-with-win.github.io/demo/).
+Audio samples are available at [here](https://one-shot-voice-conversion-with-win.github.io).
 
 <!-- ![](./pic/whole-model.png) -->
 
