@@ -80,7 +80,18 @@ We generate one-shot voice conversion utterances  ***between the 10 one-shot spe
 
 
 
+# Citing WINVC
 
+```
+@inproceedings{huang2021winvc,
+  title={WINVC: One-Shot Voice Conversion with Weight Adaptive Instance Normalization},
+  author={Huang, Shengjie and Chen, Mingjie and Xu, Yanyan and Ke, Dengfeng and Hain, Thomas},
+  booktitle={Pacific Rim International Conference on Artificial Intelligence},
+  pages={559--573},
+  year={2021},
+  organization={Springer}
+}
+```
 
 
 
